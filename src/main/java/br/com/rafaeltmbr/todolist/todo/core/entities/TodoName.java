@@ -5,7 +5,7 @@ import br.com.rafaeltmbr.todolist.todo.core.exceptions.TodoException;
 public class TodoName {
     private String value;
 
-    public TodoName(String value) throws Exception {
+    public TodoName(String value) throws TodoException {
         this.setValue(value);
     }
 
@@ -13,7 +13,7 @@ public class TodoName {
         return this.value;
     }
 
-    public void setValue(String value) throws Exception {
+    public void setValue(String value) throws TodoException {
         if (value == null) {
             throw new TodoException(TodoException.Type.TODO_INVALID_NAME, "Todo name value must not be null.");
         }

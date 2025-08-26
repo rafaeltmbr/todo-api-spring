@@ -1,12 +1,14 @@
 package br.com.rafaeltmbr.todolist.todo.infra.data.repositories.jpa;
 
 import br.com.rafaeltmbr.todolist.common.core.entities.CreatedAt;
+import br.com.rafaeltmbr.todolist.common.core.entities.Id;
+import br.com.rafaeltmbr.todolist.common.core.exceptions.CommonException;
 import br.com.rafaeltmbr.todolist.todo.core.entities.Todo;
 import br.com.rafaeltmbr.todolist.todo.core.entities.TodoName;
+import br.com.rafaeltmbr.todolist.todo.core.exceptions.TodoException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
@@ -14,7 +16,7 @@ import java.util.UUID;
 
 @Entity(name = "todo")
 public class TodoEntityJpa {
-    @Id
+    @jakarta.persistence.Id
     @GeneratedValue(generator = "UUID")
     public UUID id;
 
@@ -41,7 +43,7 @@ public class TodoEntityJpa {
         this.createdAt = createdAt;
     }
 
-    public Todo toTodo() throws Exception {
-        return new Todo(id, new TodoName(name), done, new CreatedAt(createdAt));
+    public Todo toTodo() throws TodoException, CommonException {
+        return new Todo(new Id(id.toString()), new TodoName(name), done, new CreatedAt(createdAt));
     }
 }

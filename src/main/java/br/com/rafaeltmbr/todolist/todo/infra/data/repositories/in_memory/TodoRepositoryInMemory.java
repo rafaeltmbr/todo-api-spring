@@ -1,6 +1,7 @@
 package br.com.rafaeltmbr.todolist.todo.infra.data.repositories.in_memory;
 
 import br.com.rafaeltmbr.todolist.common.core.entities.CreatedAt;
+import br.com.rafaeltmbr.todolist.common.core.entities.Id;
 import br.com.rafaeltmbr.todolist.todo.core.data.repositories.TodoRepository;
 import br.com.rafaeltmbr.todolist.todo.core.dtos.CreateTodoDto;
 import br.com.rafaeltmbr.todolist.todo.core.entities.Todo;
@@ -10,7 +11,6 @@ import br.com.rafaeltmbr.todolist.todo.core.exceptions.TodoException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 public class TodoRepositoryInMemory implements TodoRepository {
     private final ArrayList<Todo> todos = new ArrayList<>();
@@ -21,7 +21,7 @@ public class TodoRepositoryInMemory implements TodoRepository {
     }
 
     @Override
-    public Optional<Todo> findById(UUID id) throws Exception {
+    public Optional<Todo> findById(Id id) throws Exception {
         for (Todo todo : this.todos) {
             if (todo.getId().equals(id)) return Optional.of(todo);
         }
@@ -46,14 +46,14 @@ public class TodoRepositoryInMemory implements TodoRepository {
             throw new TodoException(TodoException.Type.TODO_NAME_ALREADY_USED, "Todo name '" + name + "' already in use.");
         }
 
-        var todo = new Todo(UUID.randomUUID(), name, false, new CreatedAt());
+        var todo = new Todo(new Id(), name, false, new CreatedAt());
         this.todos.add(todo);
         return todo;
     }
 
     @Override
     public void update(Todo todo) throws Exception {
-        UUID id = todo.getId();
+        Id id = todo.getId();
         Optional<Todo> foundById = this.findById(id);
         if (foundById.isEmpty()) {
             throw new TodoException(TodoException.Type.TODO_NOT_FOUND, "Todo with id '" + id + "' not found.");
@@ -70,7 +70,7 @@ public class TodoRepositoryInMemory implements TodoRepository {
     }
 
     @Override
-    public void delete(UUID id) throws Exception {
+    public void delete(Id id) throws Exception {
         Optional<Todo> todo = this.findById(id);
         if (todo.isEmpty()) {
             throw new TodoException(TodoException.Type.TODO_NOT_FOUND, "Todo with id '" + id + "' not found.");

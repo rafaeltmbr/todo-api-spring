@@ -12,6 +12,7 @@ public class CommonException extends Exception {
     }
 
     public enum Type {
-        COMMON_INVALID_CREATED_AT
+        COMMON_INVALID_CREATED_AT,
+        COMMON_INVALID_ID
     }
 }

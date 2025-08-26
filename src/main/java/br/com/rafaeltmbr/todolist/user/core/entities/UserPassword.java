@@ -5,7 +5,7 @@ import br.com.rafaeltmbr.todolist.user.core.exceptions.UserException;
 public class UserPassword {
     private String value;
 
-    public UserPassword(String value) throws Exception {
+    public UserPassword(String value) throws UserException {
         setValue(value);
     }
 
@@ -13,7 +13,7 @@ public class UserPassword {
         return value;
     }
 
-    public void setValue(String value) throws Exception {
+    public void setValue(String value) throws UserException {
         if (value == null) {
             throw new UserException(UserException.Type.USER_INVALID_PASSWORD, "User password value must not be null.");
         }

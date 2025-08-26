@@ -1,28 +1,27 @@
 package br.com.rafaeltmbr.todolist.todo.core.entities;
 
 import br.com.rafaeltmbr.todolist.common.core.entities.CreatedAt;
+import br.com.rafaeltmbr.todolist.common.core.entities.Id;
 import br.com.rafaeltmbr.todolist.todo.core.exceptions.TodoException;
 
-import java.util.UUID;
-
 public class Todo {
-    private UUID id;
+    private Id id;
     private TodoName name;
     private boolean done;
     private CreatedAt createdAt;
 
-    public Todo(UUID id, TodoName name, boolean done, CreatedAt createdAt) throws Exception {
+    public Todo(Id id, TodoName name, boolean done, CreatedAt createdAt) throws TodoException {
         setId(id);
         setName(name);
         setDone(done);
         setCreatedAt(createdAt);
     }
 
-    public UUID getId() {
+    public Id getId() {
         return id;
     }
 
-    public void setId(UUID id) throws Exception {
+    public void setId(Id id) throws TodoException {
         this.id = id;
         if (this.id == null) {
             throw new TodoException(TodoException.Type.TODO_INVALID_STATE, "Todo id must not be null.");
@@ -33,7 +32,7 @@ public class Todo {
         return name;
     }
 
-    public void setName(TodoName name) throws Exception {
+    public void setName(TodoName name) throws TodoException {
         this.name = name;
         if (this.name == null) {
             throw new TodoException(TodoException.Type.TODO_INVALID_STATE, "Todo name must not be null.");
@@ -52,7 +51,7 @@ public class Todo {
         return createdAt;
     }
 
-    public void setCreatedAt(CreatedAt createdAt) throws Exception {
+    public void setCreatedAt(CreatedAt createdAt) throws TodoException {
         this.createdAt = createdAt;
         if (this.createdAt == null) {
             throw new TodoException(TodoException.Type.TODO_INVALID_STATE, "Todo createdAt must not be null.");

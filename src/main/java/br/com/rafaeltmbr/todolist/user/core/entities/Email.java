@@ -5,7 +5,7 @@ import br.com.rafaeltmbr.todolist.user.core.exceptions.UserException;
 public class Email {
     private String value;
 
-    public Email(String value) throws Exception {
+    public Email(String value) throws UserException {
         setValue(value);
     }
 
@@ -13,7 +13,7 @@ public class Email {
         return value;
     }
 
-    public void setValue(String value) throws Exception {
+    public void setValue(String value) throws UserException {
         if (value == null) {
             throw new UserException(UserException.Type.USER_INVALID_EMAIL, "Email value must not be null.");
         }

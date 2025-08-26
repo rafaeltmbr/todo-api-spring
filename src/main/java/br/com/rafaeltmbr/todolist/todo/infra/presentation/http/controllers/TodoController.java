@@ -1,5 +1,6 @@
 package br.com.rafaeltmbr.todolist.todo.infra.presentation.http.controllers;
 
+import br.com.rafaeltmbr.todolist.common.core.entities.Id;
 import br.com.rafaeltmbr.todolist.todo.core.dtos.CreateTodoDto;
 import br.com.rafaeltmbr.todolist.todo.core.dtos.UpdateTodoDto;
 import br.com.rafaeltmbr.todolist.todo.core.entities.Todo;
@@ -13,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/todo")
@@ -37,16 +37,16 @@ public class TodoController {
     }
 
     @PutMapping("/{id}")
-    public TodoResponseBody update(@PathVariable("id") UUID id, @RequestBody UpdateTodoRequestBody params) throws Exception {
+    public TodoResponseBody update(@PathVariable("id") String id, @RequestBody UpdateTodoRequestBody params) throws Exception {
         var appContainer = AppContainer.getInstance(todoRepositoryJpaInterface);
-        var dto = new UpdateTodoDto(id, new TodoName(params.name()), params.done());
+        var dto = new UpdateTodoDto(new Id(id), new TodoName(params.name()), params.done());
         Todo todo = appContainer.useCases.updateTodo().execute(dto);
         return new TodoResponseBody(todo);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable("id") UUID id) throws Exception {
+    public void delete(@PathVariable("id") String id) throws Exception {
         var appContainer = AppContainer.getInstance(todoRepositoryJpaInterface);
-        appContainer.useCases.deleteTodo().execute(id);
+        appContainer.useCases.deleteTodo().execute(new Id(id));
     }
 }

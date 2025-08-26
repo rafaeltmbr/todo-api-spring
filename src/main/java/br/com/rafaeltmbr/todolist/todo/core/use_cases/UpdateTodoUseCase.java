@@ -1,5 +1,6 @@
 package br.com.rafaeltmbr.todolist.todo.core.use_cases;
 
+import br.com.rafaeltmbr.todolist.common.core.entities.Id;
 import br.com.rafaeltmbr.todolist.todo.core.data.repositories.TodoRepository;
 import br.com.rafaeltmbr.todolist.todo.core.dtos.UpdateTodoDto;
 import br.com.rafaeltmbr.todolist.todo.core.entities.Todo;
@@ -7,13 +8,12 @@ import br.com.rafaeltmbr.todolist.todo.core.entities.TodoName;
 import br.com.rafaeltmbr.todolist.todo.core.exceptions.TodoException;
 
 import java.util.Optional;
-import java.util.UUID;
 
 
 public record UpdateTodoUseCase(TodoRepository todoRepository) {
 
     public Todo execute(UpdateTodoDto dto) throws Exception {
-        UUID id = dto.id();
+        Id id = dto.id();
         TodoName name = dto.name();
         boolean done = dto.done();
 

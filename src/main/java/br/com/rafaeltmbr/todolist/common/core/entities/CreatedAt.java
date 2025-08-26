@@ -11,7 +11,7 @@ public class CreatedAt {
         value = LocalDateTime.now();
     }
 
-    public CreatedAt(LocalDateTime value) throws Exception {
+    public CreatedAt(LocalDateTime value) throws CommonException {
         setValue(value);
     }
 
@@ -19,7 +19,7 @@ public class CreatedAt {
         return value;
     }
 
-    public void setValue(LocalDateTime value) throws Exception {
+    public void setValue(LocalDateTime value) throws CommonException {
         if (value == null) {
             throw new CommonException(CommonException.Type.COMMON_INVALID_CREATED_AT, "CreatedAt value should not be null.");
         }

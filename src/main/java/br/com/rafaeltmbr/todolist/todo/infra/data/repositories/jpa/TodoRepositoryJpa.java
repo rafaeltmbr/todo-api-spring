@@ -1,5 +1,6 @@
 package br.com.rafaeltmbr.todolist.todo.infra.data.repositories.jpa;
 
+import br.com.rafaeltmbr.todolist.common.core.entities.Id;
 import br.com.rafaeltmbr.todolist.todo.core.data.repositories.TodoRepository;
 import br.com.rafaeltmbr.todolist.todo.core.dtos.CreateTodoDto;
 import br.com.rafaeltmbr.todolist.todo.core.entities.Todo;
@@ -14,7 +15,6 @@ import java.util.UUID;
 
 
 public record TodoRepositoryJpa(ITodoRepositoryJpa repositoryJpaInterface) implements TodoRepository {
-
     @Override
     public List<Todo> listAll() throws Exception {
         ArrayList<Todo> todos = new ArrayList<>();
@@ -27,8 +27,8 @@ public record TodoRepositoryJpa(ITodoRepositoryJpa repositoryJpaInterface) imple
     }
 
     @Override
-    public Optional<Todo> findById(UUID id) throws Exception {
-        Optional<TodoEntityJpa> todo = repositoryJpaInterface.findById(id);
+    public Optional<Todo> findById(Id id) throws Exception {
+        Optional<TodoEntityJpa> todo = repositoryJpaInterface.findById(UUID.fromString(id.toString()));
         if (todo.isEmpty()) {
             return Optional.empty();
         }
@@ -63,14 +63,14 @@ public record TodoRepositoryJpa(ITodoRepositoryJpa repositoryJpaInterface) imple
 
     @Override
     public void update(Todo todo) throws Exception {
-        UUID id = todo.getId();
-        Optional<TodoEntityJpa> found = repositoryJpaInterface.findById(id);
+        var uuid = UUID.fromString(todo.getId().toString());
+        Optional<TodoEntityJpa> found = repositoryJpaInterface.findById(uuid);
         if (found.isEmpty()) {
-            throw new TodoException(TodoException.Type.TODO_NOT_FOUND, "Todo with id '" + id + "' not found.");
+            throw new TodoException(TodoException.Type.TODO_NOT_FOUND, "Todo with id '" + uuid + "' not found.");
         }
 
         var entity = new TodoEntityJpa(
-                todo.getId(),
+                uuid,
                 todo.getName().getValue(),
                 todo.getDone(),
                 found.get().createdAt
@@ -80,7 +80,7 @@ public record TodoRepositoryJpa(ITodoRepositoryJpa repositoryJpaInterface) imple
     }
 
     @Override
-    public void delete(UUID id) throws Exception {
-        repositoryJpaInterface.deleteById(id);
+    public void delete(Id id) throws Exception {
+        repositoryJpaInterface.deleteById(UUID.fromString(id.toString()));
     }
 }
