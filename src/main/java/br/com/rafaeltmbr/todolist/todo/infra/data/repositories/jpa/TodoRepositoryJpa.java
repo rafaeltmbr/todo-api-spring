@@ -1,6 +1,7 @@
 package br.com.rafaeltmbr.todolist.todo.infra.data.repositories.jpa;
 
 import br.com.rafaeltmbr.todolist.todo.core.data.repositories.TodoRepository;
+import br.com.rafaeltmbr.todolist.todo.core.dtos.CreateTodoDto;
 import br.com.rafaeltmbr.todolist.todo.core.entities.Todo;
 import br.com.rafaeltmbr.todolist.todo.core.entities.TodoName;
 import br.com.rafaeltmbr.todolist.todo.core.exceptions.TodoException;
@@ -46,7 +47,8 @@ public record TodoRepositoryJpa(ITodoRepositoryJpa repositoryJpaInterface) imple
     }
 
     @Override
-    public Todo create(TodoName name) throws Exception {
+    public Todo create(CreateTodoDto dto) throws Exception {
+        TodoName name = dto.name();
         var entity = new TodoEntityJpa(
                 null,
                 name.getValue(),
@@ -56,7 +58,7 @@ public record TodoRepositoryJpa(ITodoRepositoryJpa repositoryJpaInterface) imple
 
         TodoEntityJpa created = repositoryJpaInterface.save(entity);
 
-        return new Todo(created.id, name, false);
+        return created.toTodo();
     }
 
     @Override

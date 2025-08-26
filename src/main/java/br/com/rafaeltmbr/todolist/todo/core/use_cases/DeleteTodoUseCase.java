@@ -12,7 +12,7 @@ public record DeleteTodoUseCase(TodoRepository todoRepository) {
     public void execute(UUID id) throws Exception {
         Optional<Todo> found = this.todoRepository.findById(id);
         if (found.isEmpty()) {
-            throw new TodoException(TodoException.Type.TODO_NOT_FOUND, "Todo with id '" + id.toString() + "' not found.");
+            throw new TodoException(TodoException.Type.TODO_NOT_FOUND, "Todo with id '" + id + "' not found.");
         }
 
         this.todoRepository.delete(id);

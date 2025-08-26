@@ -14,12 +14,12 @@ public record UpdateTodoUseCase(TodoRepository todoRepository) {
 
     public Todo execute(UpdateTodoDto dto) throws Exception {
         UUID id = dto.id();
-        var name = new TodoName(dto.nameValue());
+        TodoName name = dto.name();
         boolean done = dto.done();
 
         Optional<Todo> foundById = this.todoRepository.findById(id);
         if (foundById.isEmpty()) {
-            throw new TodoException(TodoException.Type.TODO_NOT_FOUND, "Todo with id '" + id.toString() + "' not found.");
+            throw new TodoException(TodoException.Type.TODO_NOT_FOUND, "Todo with id '" + id + "' not found.");
         }
 
         Optional<Todo> foundByName = this.todoRepository.findByName(name);
@@ -27,7 +27,7 @@ public record UpdateTodoUseCase(TodoRepository todoRepository) {
             throw new TodoException(TodoException.Type.TODO_NAME_ALREADY_USED, "Todo name '" + name + "' already in use.");
         }
 
-        var todo = new Todo(id, name, done);
+        var todo = new Todo(id, name, done, foundById.get().getCreatedAt());
 
         this.todoRepository.update(todo);
 

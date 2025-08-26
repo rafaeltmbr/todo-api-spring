@@ -1,4 +1,6 @@
 package br.com.rafaeltmbr.todolist.todo.core.dtos;
 
-public record CreateTodoDto(String name) {
+import br.com.rafaeltmbr.todolist.todo.core.entities.TodoName;
+
+public record CreateTodoDto(TodoName name) {
 }

@@ -1,5 +1,6 @@
 package br.com.rafaeltmbr.todolist.todo.core.data.repositories;
 
+import br.com.rafaeltmbr.todolist.todo.core.dtos.CreateTodoDto;
 import br.com.rafaeltmbr.todolist.todo.core.entities.Todo;
 import br.com.rafaeltmbr.todolist.todo.core.entities.TodoName;
 
@@ -15,7 +16,7 @@ public interface TodoRepository {
 
     Optional<Todo> findByName(TodoName name) throws Exception;
 
-    Todo create(TodoName name) throws Exception;
+    Todo create(CreateTodoDto dto) throws Exception;
 
     void update(Todo todo) throws Exception;
 

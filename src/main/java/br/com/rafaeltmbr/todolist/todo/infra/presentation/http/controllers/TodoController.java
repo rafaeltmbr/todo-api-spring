@@ -3,8 +3,10 @@ package br.com.rafaeltmbr.todolist.todo.infra.presentation.http.controllers;
 import br.com.rafaeltmbr.todolist.todo.core.dtos.CreateTodoDto;
 import br.com.rafaeltmbr.todolist.todo.core.dtos.UpdateTodoDto;
 import br.com.rafaeltmbr.todolist.todo.core.entities.Todo;
+import br.com.rafaeltmbr.todolist.todo.core.entities.TodoName;
 import br.com.rafaeltmbr.todolist.todo.infra.data.repositories.jpa.ITodoRepositoryJpa;
 import br.com.rafaeltmbr.todolist.todo.infra.di.AppContainer;
+import br.com.rafaeltmbr.todolist.todo.infra.presentation.http.entities.CreateTodoRequestBody;
 import br.com.rafaeltmbr.todolist.todo.infra.presentation.http.entities.TodoResponseBody;
 import br.com.rafaeltmbr.todolist.todo.infra.presentation.http.entities.UpdateTodoRequestBody;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +29,9 @@ public class TodoController {
     }
 
     @PostMapping("")
-    public TodoResponseBody create(@RequestBody CreateTodoDto dto) throws Exception {
+    public TodoResponseBody create(@RequestBody CreateTodoRequestBody body) throws Exception {
         var appContainer = AppContainer.getInstance(todoRepositoryJpaInterface);
+        var dto = new CreateTodoDto(new TodoName(body.name()));
         Todo todo = appContainer.useCases.createTodo().execute(dto);
         return new TodoResponseBody(todo);
     }
@@ -36,7 +39,7 @@ public class TodoController {
     @PutMapping("/{id}")
     public TodoResponseBody update(@PathVariable("id") UUID id, @RequestBody UpdateTodoRequestBody params) throws Exception {
         var appContainer = AppContainer.getInstance(todoRepositoryJpaInterface);
-        var dto = new UpdateTodoDto(id, params.name(), params.done());
+        var dto = new UpdateTodoDto(id, new TodoName(params.name()), params.done());
         Todo todo = appContainer.useCases.updateTodo().execute(dto);
         return new TodoResponseBody(todo);
     }

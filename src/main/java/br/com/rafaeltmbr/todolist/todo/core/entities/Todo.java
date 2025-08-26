@@ -1,5 +1,6 @@
 package br.com.rafaeltmbr.todolist.todo.core.entities;
 
+import br.com.rafaeltmbr.todolist.common.core.entities.CreatedAt;
 import br.com.rafaeltmbr.todolist.todo.core.exceptions.TodoException;
 
 import java.util.UUID;
@@ -8,11 +9,13 @@ public class Todo {
     private UUID id;
     private TodoName name;
     private boolean done;
+    private CreatedAt createdAt;
 
-    public Todo(UUID id, TodoName name, boolean done) throws Exception {
+    public Todo(UUID id, TodoName name, boolean done, CreatedAt createdAt) throws Exception {
         setId(id);
         setName(name);
         setDone(done);
+        setCreatedAt(createdAt);
     }
 
     public UUID getId() {
@@ -45,9 +48,20 @@ public class Todo {
         this.done = done;
     }
 
+    public CreatedAt getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(CreatedAt createdAt) throws Exception {
+        this.createdAt = createdAt;
+        if (this.createdAt == null) {
+            throw new TodoException(TodoException.Type.TODO_INVALID_STATE, "Todo createdAt must not be null.");
+        }
+    }
+
     @Override
     public String toString() {
-        return "Todo(id=" + id.toString() + ", name='" + name.getValue() + "', done=" + done + ")";
+        return "Todo(id=" + id + ", name='" + name + "', done=" + done + ", createdAt=" + createdAt + ")";
     }
 
     @Override

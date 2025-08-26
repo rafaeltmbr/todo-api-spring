@@ -1,6 +1,8 @@
 package br.com.rafaeltmbr.todolist.todo.infra.data.repositories.in_memory;
 
+import br.com.rafaeltmbr.todolist.common.core.entities.CreatedAt;
 import br.com.rafaeltmbr.todolist.todo.core.data.repositories.TodoRepository;
+import br.com.rafaeltmbr.todolist.todo.core.dtos.CreateTodoDto;
 import br.com.rafaeltmbr.todolist.todo.core.entities.Todo;
 import br.com.rafaeltmbr.todolist.todo.core.entities.TodoName;
 import br.com.rafaeltmbr.todolist.todo.core.exceptions.TodoException;
@@ -37,13 +39,14 @@ public class TodoRepositoryInMemory implements TodoRepository {
     }
 
     @Override
-    public Todo create(TodoName name) throws Exception {
+    public Todo create(CreateTodoDto dto) throws Exception {
+        TodoName name = dto.name();
         Optional<Todo> found = this.findByName(name);
         if (found.isPresent()) {
             throw new TodoException(TodoException.Type.TODO_NAME_ALREADY_USED, "Todo name '" + name + "' already in use.");
         }
 
-        var todo = new Todo(UUID.randomUUID(), name, false);
+        var todo = new Todo(UUID.randomUUID(), name, false, new CreatedAt());
         this.todos.add(todo);
         return todo;
     }

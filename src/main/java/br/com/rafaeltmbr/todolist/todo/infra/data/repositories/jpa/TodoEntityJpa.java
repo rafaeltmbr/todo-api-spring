@@ -1,5 +1,6 @@
 package br.com.rafaeltmbr.todolist.todo.infra.data.repositories.jpa;
 
+import br.com.rafaeltmbr.todolist.common.core.entities.CreatedAt;
 import br.com.rafaeltmbr.todolist.todo.core.entities.Todo;
 import br.com.rafaeltmbr.todolist.todo.core.entities.TodoName;
 import jakarta.persistence.Column;
@@ -41,6 +42,6 @@ public class TodoEntityJpa {
     }
 
     public Todo toTodo() throws Exception {
-        return new Todo(id, new TodoName(name), done);
+        return new Todo(id, new TodoName(name), done, new CreatedAt(createdAt));
     }
 }
