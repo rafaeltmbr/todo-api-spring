@@ -1,6 +1,6 @@
 package br.com.rafaeltmbr.todolist.todo.core.entities;
 
-import br.com.rafaeltmbr.todolist.todo.core.exceptions.InvalidTodoNameException;
+import br.com.rafaeltmbr.todolist.todo.core.exceptions.TodoException;
 
 public class TodoName {
     private String value;
@@ -15,13 +15,15 @@ public class TodoName {
 
     public void setValue(String value) throws Exception {
         if (value == null) {
-            throw new InvalidTodoNameException("Todo name value must not be null.");
+            throw new TodoException(TodoException.Type.TODO_INVALID_NAME, "Todo name value must not be null.");
         }
 
         this.value = value.trim();
+        var minimum = 3;
+        var maximum = 64;
 
-        if (this.value.length() < 3 || this.value.length() > 64) {
-            throw new InvalidTodoNameException("Todo name must be between 3 to 64 characters long.");
+        if (this.value.length() < minimum || this.value.length() > maximum) {
+            throw new TodoException(TodoException.Type.TODO_INVALID_NAME, "Todo name must be between " + minimum + " to " + maximum + " characters long.");
         }
     }
 

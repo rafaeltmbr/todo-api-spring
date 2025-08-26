@@ -1,9 +1,9 @@
 package br.com.rafaeltmbr.todolist.todo.infra.data.repositories.jpa;
 
-import br.com.rafaeltmbr.todolist.common.core.exceptions.DomainException;
 import br.com.rafaeltmbr.todolist.todo.core.data.repositories.TodoRepository;
 import br.com.rafaeltmbr.todolist.todo.core.entities.Todo;
 import br.com.rafaeltmbr.todolist.todo.core.entities.TodoName;
+import br.com.rafaeltmbr.todolist.todo.core.exceptions.TodoException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -61,9 +61,10 @@ public record TodoRepositoryJpa(ITodoRepositoryJpa repositoryJpaInterface) imple
 
     @Override
     public void update(Todo todo) throws Exception {
-        Optional<TodoEntityJpa> found = repositoryJpaInterface.findById(todo.getId());
+        UUID id = todo.getId();
+        Optional<TodoEntityJpa> found = repositoryJpaInterface.findById(id);
         if (found.isEmpty()) {
-            throw new DomainException("Todo not found.");
+            throw new TodoException(TodoException.Type.TODO_NOT_FOUND, "Todo with id '" + id + "' not found.");
         }
 
         var entity = new TodoEntityJpa(

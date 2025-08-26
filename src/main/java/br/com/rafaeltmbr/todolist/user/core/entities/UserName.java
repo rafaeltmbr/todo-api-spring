@@ -1,34 +1,45 @@
-package br.com.rafaeltmbr.todolist.core.entities;
+package br.com.rafaeltmbr.todolist.user.core.entities;
 
-import br.com.rafaeltmbr.todolist.core.exceptions.InvalidUserNameException;
+import br.com.rafaeltmbr.todolist.user.core.exceptions.UserException;
 
 public class UserName {
     private String value;
 
-    UserName(String name) throws Exception {
-        this.value = name.trim();
-
-        validate();
-    }
-
-    private void validate() throws Exception {
+    UserName(String value) throws Exception {
+        setValue(value);
     }
 
     public String getValue() {
-        return value;
+        return this.value;
     }
 
     public void setValue(String value) throws Exception {
         if (value == null) {
-
+            throw new UserException(UserException.Type.USER_INVALID_NAME, "User name value must not be null.");
         }
 
-        var formatted = value.trim();
+        this.value = value.trim();
+        var minimum = 3;
+        var maximum = 64;
 
-        if (value.length() < 3 || value.length() > 64) {
-            throw new InvalidUserNameException();
+        if (this.value.length() < minimum || this.value.length() > maximum) {
+            throw new UserException(UserException.Type.USER_INVALID_NAME, "User name must be between " + minimum + " to " + maximum + " characters long.");
         }
+    }
 
-        this.value = formatted;
+    @Override
+    public String toString() {
+        return this.value;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) return false;
+
+        if (obj.getClass() != getClass()) return false;
+
+        var other = (UserName) obj;
+
+        return value.equals(other.value);
     }
 }

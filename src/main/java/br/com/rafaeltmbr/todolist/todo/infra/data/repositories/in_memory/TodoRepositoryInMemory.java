@@ -3,8 +3,7 @@ package br.com.rafaeltmbr.todolist.todo.infra.data.repositories.in_memory;
 import br.com.rafaeltmbr.todolist.todo.core.data.repositories.TodoRepository;
 import br.com.rafaeltmbr.todolist.todo.core.entities.Todo;
 import br.com.rafaeltmbr.todolist.todo.core.entities.TodoName;
-import br.com.rafaeltmbr.todolist.todo.core.exceptions.NameAlreadyUsedException;
-import br.com.rafaeltmbr.todolist.todo.core.exceptions.TodoNotFoundException;
+import br.com.rafaeltmbr.todolist.todo.core.exceptions.TodoException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +40,7 @@ public class TodoRepositoryInMemory implements TodoRepository {
     public Todo create(TodoName name) throws Exception {
         Optional<Todo> found = this.findByName(name);
         if (found.isPresent()) {
-            throw new NameAlreadyUsedException();
+            throw new TodoException(TodoException.Type.TODO_NAME_ALREADY_USED, "Todo name '" + name + "' already in use.");
         }
 
         var todo = new Todo(UUID.randomUUID(), name, false);
@@ -51,14 +50,16 @@ public class TodoRepositoryInMemory implements TodoRepository {
 
     @Override
     public void update(Todo todo) throws Exception {
-        Optional<Todo> foundById = this.findById(todo.getId());
+        UUID id = todo.getId();
+        Optional<Todo> foundById = this.findById(id);
         if (foundById.isEmpty()) {
-            throw new TodoNotFoundException();
+            throw new TodoException(TodoException.Type.TODO_NOT_FOUND, "Todo with id '" + id + "' not found.");
         }
 
-        Optional<Todo> foundByName = this.findByName(todo.getName());
+        TodoName name = todo.getName();
+        Optional<Todo> foundByName = this.findByName(name);
         if (foundByName.isPresent() && !foundByName.get().getId().equals(todo.getId())) {
-            throw new NameAlreadyUsedException();
+            throw new TodoException(TodoException.Type.TODO_NAME_ALREADY_USED, "Todo name '" + name + "' already in use.");
         }
 
         this.todos.remove(foundById.get());
@@ -67,11 +68,11 @@ public class TodoRepositoryInMemory implements TodoRepository {
 
     @Override
     public void delete(UUID id) throws Exception {
-        Optional<Todo> found = this.findById(id);
-        if (found.isEmpty()) {
-            throw new TodoNotFoundException();
+        Optional<Todo> todo = this.findById(id);
+        if (todo.isEmpty()) {
+            throw new TodoException(TodoException.Type.TODO_NOT_FOUND, "Todo with id '" + id + "' not found.");
         }
 
-        this.todos.remove(found.get());
+        this.todos.remove(todo.get());
     }
 }

@@ -1,6 +1,6 @@
 package br.com.rafaeltmbr.todolist.todo.core.entities;
 
-import br.com.rafaeltmbr.todolist.todo.core.exceptions.InvalidTodoException;
+import br.com.rafaeltmbr.todolist.todo.core.exceptions.TodoException;
 
 import java.util.UUID;
 
@@ -22,7 +22,7 @@ public class Todo {
     public void setId(UUID id) throws Exception {
         this.id = id;
         if (this.id == null) {
-            throw new InvalidTodoException("Todo id must not be null.");
+            throw new TodoException(TodoException.Type.TODO_INVALID_STATE, "Todo id must not be null.");
         }
     }
 
@@ -33,7 +33,7 @@ public class Todo {
     public void setName(TodoName name) throws Exception {
         this.name = name;
         if (this.name == null) {
-            throw new InvalidTodoException("Todo name must not be null.");
+            throw new TodoException(TodoException.Type.TODO_INVALID_STATE, "Todo name must not be null.");
         }
     }
 

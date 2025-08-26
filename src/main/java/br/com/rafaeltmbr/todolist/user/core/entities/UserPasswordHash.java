@@ -1,11 +1,11 @@
 package br.com.rafaeltmbr.todolist.user.core.entities;
 
-import br.com.rafaeltmbr.todolist.user.core.exceptions.InvalidUserPasswordException;
+import br.com.rafaeltmbr.todolist.user.core.exceptions.UserException;
 
-public class UserPassword {
+public class UserPasswordHash {
     private String value;
 
-    public UserPassword(String value) throws Exception {
+    public UserPasswordHash(String value) throws Exception {
         setValue(value);
     }
 
@@ -15,13 +15,14 @@ public class UserPassword {
 
     public void setValue(String value) throws Exception {
         if (value == null) {
-            throw new InvalidUserPasswordException("User password value must not be null.");
+            throw new UserException(UserException.Type.USER_INVALID_PASSWORD_HASH, "User password hash value must not be null.");
         }
 
         this.value = value.trim();
+        var length = 32;
 
-        if (this.value.length() < 8 || this.value.length() > 32) {
-            throw new InvalidUserPasswordException("User password must be between 8 to 32 characters longs.");
+        if (this.value.length() == 32) {
+            throw new UserException(UserException.Type.USER_INVALID_PASSWORD_HASH, "User password hash must be " + length + " characters long.");
         }
     }
 
@@ -36,7 +37,7 @@ public class UserPassword {
 
         if (obj.getClass() != getClass()) return false;
 
-        var other = (UserPassword) obj;
+        var other = (UserPasswordHash) obj;
 
         return value.equals(other.value);
     }

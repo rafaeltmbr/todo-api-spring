@@ -4,8 +4,7 @@ import br.com.rafaeltmbr.todolist.todo.core.data.repositories.TodoRepository;
 import br.com.rafaeltmbr.todolist.todo.core.dtos.UpdateTodoDto;
 import br.com.rafaeltmbr.todolist.todo.core.entities.Todo;
 import br.com.rafaeltmbr.todolist.todo.core.entities.TodoName;
-import br.com.rafaeltmbr.todolist.todo.core.exceptions.NameAlreadyUsedException;
-import br.com.rafaeltmbr.todolist.todo.core.exceptions.TodoNotFoundException;
+import br.com.rafaeltmbr.todolist.todo.core.exceptions.TodoException;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -20,12 +19,12 @@ public record UpdateTodoUseCase(TodoRepository todoRepository) {
 
         Optional<Todo> foundById = this.todoRepository.findById(id);
         if (foundById.isEmpty()) {
-            throw new TodoNotFoundException();
+            throw new TodoException(TodoException.Type.TODO_NOT_FOUND, "Todo with id '" + id.toString() + "' not found.");
         }
 
         Optional<Todo> foundByName = this.todoRepository.findByName(name);
         if (foundByName.isPresent() && !foundByName.get().getId().equals(id)) {
-            throw new NameAlreadyUsedException();
+            throw new TodoException(TodoException.Type.TODO_NAME_ALREADY_USED, "Todo name '" + name + "' already in use.");
         }
 
         var todo = new Todo(id, name, done);
