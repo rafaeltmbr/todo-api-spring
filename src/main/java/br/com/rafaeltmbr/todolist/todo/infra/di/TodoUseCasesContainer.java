@@ -5,7 +5,7 @@ import br.com.rafaeltmbr.todolist.todo.core.use_cases.DeleteTodoUseCase;
 import br.com.rafaeltmbr.todolist.todo.core.use_cases.ListTodosUseCase;
 import br.com.rafaeltmbr.todolist.todo.core.use_cases.UpdateTodoUseCase;
 
-public record AppUseCasesContainer(
+public record TodoUseCasesContainer(
         ListTodosUseCase listTodos,
         CreateTodoUseCase createTodo,
         UpdateTodoUseCase updateTodo,

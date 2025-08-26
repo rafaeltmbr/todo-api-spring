@@ -1,6 +1,5 @@
 package br.com.rafaeltmbr.todolist.app.infra.presentation.http.controllers;
 
-import br.com.rafaeltmbr.todolist.app.infra.presentation.http.entities.ErrorResponseBody;
 import br.com.rafaeltmbr.todolist.common.core.exceptions.CommonException;
 import br.com.rafaeltmbr.todolist.todo.core.exceptions.TodoException;
 import br.com.rafaeltmbr.todolist.user.core.exceptions.UserException;
@@ -35,9 +34,13 @@ public class ExceptionController {
             case USER_INVALID_NAME,
                  USER_INVALID_STATE,
                  USER_INVALID_PASSWORD,
+                 USER_EMAIL_ALREADY_USED,
                  USER_INVALID_EMAIL -> HttpStatus.BAD_REQUEST;
 
             case USER_NOT_FOUND -> HttpStatus.NOT_FOUND;
+
+            case USER_INVALID_CREDENTIALS,
+                 USER_INVALID_AUTHENTICATION_TOKEN -> HttpStatus.UNAUTHORIZED;
 
             case USER_INVALID_PASSWORD_HASH -> HttpStatus.INTERNAL_SERVER_ERROR;
         };
@@ -66,9 +69,15 @@ public class ExceptionController {
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public ErrorResponseBody handleUnexpectedException(Exception exception) {
-        String error = "server_internal_error";
+        String error = "internal_server_error";
         String message = exception.getMessage();
 
         return new ErrorResponseBody(error, message);
+    }
+
+    public record ErrorResponseBody(
+            String error,
+            String message
+    ) {
     }
 }

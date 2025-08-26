@@ -19,5 +19,8 @@ public class UserException extends Exception {
         USER_INVALID_PASSWORD,
         USER_INVALID_PASSWORD_HASH,
         USER_NOT_FOUND,
+        USER_EMAIL_ALREADY_USED,
+        USER_INVALID_CREDENTIALS,
+        USER_INVALID_AUTHENTICATION_TOKEN
     }
 }

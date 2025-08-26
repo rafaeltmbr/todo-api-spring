@@ -1,7 +1,6 @@
 package br.com.rafaeltmbr.todolist.todo.core.data.repositories;
 
 import br.com.rafaeltmbr.todolist.common.core.entities.Id;
-import br.com.rafaeltmbr.todolist.todo.core.dtos.CreateTodoDto;
 import br.com.rafaeltmbr.todolist.todo.core.entities.Todo;
 import br.com.rafaeltmbr.todolist.todo.core.entities.TodoName;
 
@@ -16,9 +15,19 @@ public interface TodoRepository {
 
     Optional<Todo> findByName(TodoName name) throws Exception;
 
-    Todo create(CreateTodoDto dto) throws Exception;
+    Todo create(CreateParams params) throws Exception;
 
-    void update(Todo todo) throws Exception;
+    Todo update(UpdateParams params) throws Exception;
 
     void delete(Id id) throws Exception;
+
+    record CreateParams(TodoName name) {
+    }
+
+    record UpdateParams(
+            Id id,
+            TodoName name,
+            boolean done
+    ) {
+    }
 }

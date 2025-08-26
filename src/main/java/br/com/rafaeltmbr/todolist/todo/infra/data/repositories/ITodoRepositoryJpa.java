@@ -1,4 +1,4 @@
-package br.com.rafaeltmbr.todolist.todo.infra.data.repositories.jpa;
+package br.com.rafaeltmbr.todolist.todo.infra.data.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -4,28 +4,28 @@ import br.com.rafaeltmbr.todolist.todo.core.use_cases.CreateTodoUseCase;
 import br.com.rafaeltmbr.todolist.todo.core.use_cases.DeleteTodoUseCase;
 import br.com.rafaeltmbr.todolist.todo.core.use_cases.ListTodosUseCase;
 import br.com.rafaeltmbr.todolist.todo.core.use_cases.UpdateTodoUseCase;
-import br.com.rafaeltmbr.todolist.todo.infra.data.repositories.jpa.ITodoRepositoryJpa;
-import br.com.rafaeltmbr.todolist.todo.infra.data.repositories.jpa.TodoRepositoryJpa;
+import br.com.rafaeltmbr.todolist.todo.infra.data.repositories.ITodoRepositoryJpa;
+import br.com.rafaeltmbr.todolist.todo.infra.data.repositories.TodoRepositoryJpa;
 
-public class AppContainer {
-    private static AppContainer container;
+public class TodoContainer {
+    private static TodoContainer container;
 
-    public AppUseCasesContainer useCases;
-    public AppDataContainer data;
+    public TodoUseCasesContainer useCases;
+    public TodoDataContainer data;
 
-    private AppContainer() {
+    private TodoContainer() {
     }
 
-    public static AppContainer getInstance(ITodoRepositoryJpa todoRepositoryJpaInterface) {
+    public static synchronized TodoContainer getInstance(ITodoRepositoryJpa todoRepositoryJpaInterface) {
         if (container != null) return container;
 
-        container = new AppContainer();
+        container = new TodoContainer();
 
         var todoRepository = new TodoRepositoryJpa(todoRepositoryJpaInterface);
 
-        container.data = new AppDataContainer(new AppRepositoryContainer(todoRepository));
+        container.data = new TodoDataContainer(new TodoRepositoryContainer(todoRepository));
 
-        container.useCases = new AppUseCasesContainer(
+        container.useCases = new TodoUseCasesContainer(
                 new ListTodosUseCase(todoRepository),
                 new CreateTodoUseCase(todoRepository),
                 new UpdateTodoUseCase(todoRepository),

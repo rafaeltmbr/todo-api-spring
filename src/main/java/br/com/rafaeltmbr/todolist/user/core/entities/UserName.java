@@ -5,7 +5,7 @@ import br.com.rafaeltmbr.todolist.user.core.exceptions.UserException;
 public class UserName {
     private String value;
 
-    UserName(String value) throws UserException {
+    public UserName(String value) throws UserException {
         setValue(value);
     }
 

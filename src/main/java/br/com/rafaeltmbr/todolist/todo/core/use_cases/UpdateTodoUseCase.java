@@ -2,7 +2,6 @@ package br.com.rafaeltmbr.todolist.todo.core.use_cases;
 
 import br.com.rafaeltmbr.todolist.common.core.entities.Id;
 import br.com.rafaeltmbr.todolist.todo.core.data.repositories.TodoRepository;
-import br.com.rafaeltmbr.todolist.todo.core.dtos.UpdateTodoDto;
 import br.com.rafaeltmbr.todolist.todo.core.entities.Todo;
 import br.com.rafaeltmbr.todolist.todo.core.entities.TodoName;
 import br.com.rafaeltmbr.todolist.todo.core.exceptions.TodoException;
@@ -12,10 +11,10 @@ import java.util.Optional;
 
 public record UpdateTodoUseCase(TodoRepository todoRepository) {
 
-    public Todo execute(UpdateTodoDto dto) throws Exception {
-        Id id = dto.id();
-        TodoName name = dto.name();
-        boolean done = dto.done();
+    public Todo execute(Params params) throws Exception {
+        Id id = params.id();
+        TodoName name = params.name();
+        boolean done = params.done();
 
         Optional<Todo> foundById = this.todoRepository.findById(id);
         if (foundById.isEmpty()) {
@@ -27,10 +26,14 @@ public record UpdateTodoUseCase(TodoRepository todoRepository) {
             throw new TodoException(TodoException.Type.TODO_NAME_ALREADY_USED, "Todo name '" + name + "' already in use.");
         }
 
-        var todo = new Todo(id, name, done, foundById.get().getCreatedAt());
+        var updateParams = new TodoRepository.UpdateParams(id, name, done);
+        return this.todoRepository.update(updateParams);
+    }
 
-        this.todoRepository.update(todo);
-
-        return todo;
+    public record Params(
+            Id id,
+            TodoName name,
+            boolean done
+    ) {
     }
 }

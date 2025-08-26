@@ -1,4 +1,4 @@
-package br.com.rafaeltmbr.todolist.todo.infra.data.repositories.jpa;
+package br.com.rafaeltmbr.todolist.todo.infra.data.repositories;
 
 import br.com.rafaeltmbr.todolist.common.core.entities.CreatedAt;
 import br.com.rafaeltmbr.todolist.common.core.entities.Id;
@@ -31,7 +31,7 @@ public class TodoEntityJpa {
 
     public TodoEntityJpa() {
         id = null;
-        name = "";
+        name = null;
         done = false;
         createdAt = null;
     }
