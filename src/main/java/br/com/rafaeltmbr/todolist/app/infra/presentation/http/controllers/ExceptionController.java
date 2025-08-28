@@ -101,5 +101,8 @@ public class ExceptionController {
             String error,
             String message
     ) {
+        public String toJson() {
+            return "{\"error\": \"" + error + "\", \"message\":\"" + message + "\"}";
+        }
     }
 }

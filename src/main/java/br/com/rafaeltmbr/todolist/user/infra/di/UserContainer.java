@@ -41,7 +41,7 @@ public class UserContainer {
         container.data = new UserDataContainer(new UserRepositoryContainer(userRepository));
 
         container.useCases = new UserUseCasesContainer(
-                new AuthenticateUserUseCase(services.authenticationToken()),
+                new AuthenticateUserUseCase(services.authenticationToken(), userRepository),
                 new CreateUserAccountUseCase(userRepository, services.passwordHash()),
                 new CreateUserSessionUseCase(userRepository, services.passwordHash(), services.authenticationToken())
         );
