@@ -20,10 +20,12 @@ public class TodoEntityJpa {
     @GeneratedValue(generator = "UUID")
     public UUID id;
 
-    @Column(unique = true)
     public String name;
 
     public boolean done;
+
+    @Column(name = "user_id")
+    public UUID userId;
 
     @Column(name = "created_at")
     @CreationTimestamp
@@ -33,17 +35,25 @@ public class TodoEntityJpa {
         id = null;
         name = null;
         done = false;
+        userId = null;
         createdAt = null;
     }
 
-    public TodoEntityJpa(UUID id, String name, boolean done, LocalDateTime createdAt) {
+    public TodoEntityJpa(UUID id, String name, boolean done, UUID userId, LocalDateTime createdAt) {
         this.id = id;
         this.name = name;
         this.done = done;
+        this.userId = userId;
         this.createdAt = createdAt;
     }
 
     public Todo toTodo() throws TodoException, CommonException {
-        return new Todo(new Id(id.toString()), new TodoName(name), done, new CreatedAt(createdAt));
+        return new Todo(
+                new Id(id.toString()),
+                new TodoName(name),
+                done,
+                new Id(userId.toString()),
+                new CreatedAt(createdAt)
+        );
     }
 }

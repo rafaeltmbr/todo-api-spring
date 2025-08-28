@@ -2,6 +2,7 @@ package br.com.rafaeltmbr.todolist.user.infra.services;
 
 import br.com.rafaeltmbr.todolist.common.core.entities.Id;
 import br.com.rafaeltmbr.todolist.user.core.entities.UserAuthenticationToken;
+import br.com.rafaeltmbr.todolist.user.core.exceptions.UserException;
 import br.com.rafaeltmbr.todolist.user.core.services.UserAuthenticationTokenService;
 import io.jsonwebtoken.Jwts;
 
@@ -11,7 +12,7 @@ public class UserAuthenticationTokenServiceJwt implements UserAuthenticationToke
     private final SecretKey key = Jwts.SIG.HS256.key().build();
 
     @Override
-    public UserAuthenticationToken generateToken(Id id) throws Exception {
+    public UserAuthenticationToken generateToken(Id id) throws UserException {
         String value = Jwts
                 .builder()
                 .subject(id.getValue())
@@ -22,15 +23,19 @@ public class UserAuthenticationTokenServiceJwt implements UserAuthenticationToke
     }
 
     @Override
-    public Id validate(UserAuthenticationToken token) throws Exception {
-        String value = Jwts
-                .parser()
-                .verifyWith(key)
-                .build()
-                .parseSignedClaims(token.getValue())
-                .getPayload()
-                .getSubject();
+    public Id validate(UserAuthenticationToken token) throws UserException {
+        try {
+            String value = Jwts
+                    .parser()
+                    .verifyWith(key)
+                    .build()
+                    .parseSignedClaims(token.getValue())
+                    .getPayload()
+                    .getSubject();
 
-        return new Id(value);
+            return new Id(value);
+        } catch (Exception e) {
+            throw new UserException(UserException.Type.USER_AUTHENTICATION_FAILED, "Invalid user authentication token.");
+        }
     }
 }

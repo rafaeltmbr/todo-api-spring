@@ -13,6 +13,7 @@ public class TodoException extends Exception {
     }
 
     public enum Type {
+        TODO_MISSING_DEPENDENCIES,
         TODO_INVALID_STATE,
         TODO_INVALID_NAME,
         TODO_NAME_ALREADY_USED,

@@ -1,9 +1,7 @@
 package br.com.rafaeltmbr.todolist.todo.infra.data.repositories;
 
-import br.com.rafaeltmbr.todolist.common.core.entities.Id;
 import br.com.rafaeltmbr.todolist.todo.core.data.repositories.TodoRepository;
 import br.com.rafaeltmbr.todolist.todo.core.entities.Todo;
-import br.com.rafaeltmbr.todolist.todo.core.entities.TodoName;
 import br.com.rafaeltmbr.todolist.todo.core.exceptions.TodoException;
 
 import java.util.ArrayList;
@@ -14,10 +12,11 @@ import java.util.UUID;
 
 public record TodoRepositoryJpa(ITodoRepositoryJpa repositoryJpaInterface) implements TodoRepository {
     @Override
-    public List<Todo> listAll() throws Exception {
+    public List<Todo> listAll(TodoRepository.ListAllParams params) throws Exception {
         ArrayList<Todo> todos = new ArrayList<>();
 
-        for (TodoEntityJpa todo : repositoryJpaInterface.findAll()) {
+        var userId = UUID.fromString(params.userId().toString());
+        for (TodoEntityJpa todo : repositoryJpaInterface.findAllByUserId(userId)) {
             todos.add(todo.toTodo());
         }
 
@@ -25,8 +24,10 @@ public record TodoRepositoryJpa(ITodoRepositoryJpa repositoryJpaInterface) imple
     }
 
     @Override
-    public Optional<Todo> findById(Id id) throws Exception {
-        Optional<TodoEntityJpa> todo = repositoryJpaInterface.findById(UUID.fromString(id.toString()));
+    public Optional<Todo> findById(TodoRepository.FindByIdParams params) throws Exception {
+        var todoId = UUID.fromString(params.todoId().toString());
+        var userId = UUID.fromString(params.userId().toString());
+        Optional<TodoEntityJpa> todo = repositoryJpaInterface.findByUserIdAndId(userId, todoId);
         if (todo.isEmpty()) {
             return Optional.empty();
         }
@@ -35,8 +36,10 @@ public record TodoRepositoryJpa(ITodoRepositoryJpa repositoryJpaInterface) imple
     }
 
     @Override
-    public Optional<Todo> findByName(TodoName name) throws Exception {
-        Optional<TodoEntityJpa> todo = repositoryJpaInterface.findByName(name.getValue());
+    public Optional<Todo> findByName(TodoRepository.FindByNameParams params) throws Exception {
+        var userId = UUID.fromString(params.userId().toString());
+        String name = params.name().toString();
+        Optional<TodoEntityJpa> todo = repositoryJpaInterface.findByUserIdAndName(userId, name);
         if (todo.isEmpty()) {
             return Optional.empty();
         }
@@ -50,6 +53,7 @@ public record TodoRepositoryJpa(ITodoRepositoryJpa repositoryJpaInterface) imple
                 null,
                 params.name().toString(),
                 false,
+                UUID.fromString(params.userId().toString()),
                 null
         );
 
@@ -60,16 +64,18 @@ public record TodoRepositoryJpa(ITodoRepositoryJpa repositoryJpaInterface) imple
 
     @Override
     public Todo update(UpdateParams params) throws Exception {
-        var uuid = UUID.fromString(params.id().toString());
-        Optional<TodoEntityJpa> found = repositoryJpaInterface.findById(uuid);
+        var userId = UUID.fromString(params.userId().toString());
+        var todoId = UUID.fromString(params.todoId().toString());
+        Optional<TodoEntityJpa> found = repositoryJpaInterface.findByUserIdAndId(userId, todoId);
         if (found.isEmpty()) {
-            throw new TodoException(TodoException.Type.TODO_NOT_FOUND, "Todo with id '" + uuid + "' not found.");
+            throw new TodoException(TodoException.Type.TODO_NOT_FOUND, "Todo with id '" + params.todoId() + "' not found.");
         }
 
         var entity = new TodoEntityJpa(
-                uuid,
+                todoId,
                 params.name().getValue(),
                 params.done(),
+                userId,
                 found.get().createdAt
         );
 
@@ -77,7 +83,9 @@ public record TodoRepositoryJpa(ITodoRepositoryJpa repositoryJpaInterface) imple
     }
 
     @Override
-    public void delete(Id id) throws Exception {
-        repositoryJpaInterface.deleteById(UUID.fromString(id.toString()));
+    public void delete(TodoRepository.DeleteParams params) throws Exception {
+        var todoId = UUID.fromString(params.todoId().toString());
+        var userId = UUID.fromString(params.userId().toString());
+        repositoryJpaInterface.deleteByUserIdAndId(userId, todoId);
     }
 }

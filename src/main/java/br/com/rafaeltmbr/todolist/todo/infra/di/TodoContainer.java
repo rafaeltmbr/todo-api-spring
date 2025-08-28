@@ -1,5 +1,6 @@
 package br.com.rafaeltmbr.todolist.todo.infra.di;
 
+import br.com.rafaeltmbr.todolist.todo.core.exceptions.TodoException;
 import br.com.rafaeltmbr.todolist.todo.core.use_cases.CreateTodoUseCase;
 import br.com.rafaeltmbr.todolist.todo.core.use_cases.DeleteTodoUseCase;
 import br.com.rafaeltmbr.todolist.todo.core.use_cases.ListTodosUseCase;
@@ -16,8 +17,16 @@ public class TodoContainer {
     private TodoContainer() {
     }
 
-    public static synchronized TodoContainer getInstance(ITodoRepositoryJpa todoRepositoryJpaInterface) {
+    public static synchronized TodoContainer getInstance() throws TodoException {
+        return TodoContainer.getInstance(null);
+    }
+
+    public static synchronized TodoContainer getInstance(ITodoRepositoryJpa todoRepositoryJpaInterface) throws TodoException {
         if (container != null) return container;
+
+        if (todoRepositoryJpaInterface == null) {
+            throw new TodoException(TodoException.Type.TODO_MISSING_DEPENDENCIES, "Missing todoRepositoryJpaInterface.");
+        }
 
         container = new TodoContainer();
 

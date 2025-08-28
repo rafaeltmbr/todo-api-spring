@@ -5,9 +5,10 @@ import br.com.rafaeltmbr.todolist.todo.core.exceptions.TodoException;
 import br.com.rafaeltmbr.todolist.user.core.exceptions.UserException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ControllerAdvice
 public class ExceptionController {
@@ -19,6 +20,8 @@ public class ExceptionController {
                  TODO_NAME_ALREADY_USED -> HttpStatus.BAD_REQUEST;
 
             case TODO_NOT_FOUND -> HttpStatus.NOT_FOUND;
+
+            case TODO_MISSING_DEPENDENCIES -> HttpStatus.INTERNAL_SERVER_ERROR;
         };
 
         String error = exception.getType().toString().toLowerCase();
@@ -40,9 +43,10 @@ public class ExceptionController {
             case USER_NOT_FOUND -> HttpStatus.NOT_FOUND;
 
             case USER_INVALID_CREDENTIALS,
-                 USER_INVALID_AUTHENTICATION_TOKEN -> HttpStatus.UNAUTHORIZED;
+                 USER_INVALID_AUTHENTICATION_TOKEN,
+                 USER_AUTHENTICATION_FAILED -> HttpStatus.UNAUTHORIZED;
 
-            case USER_INVALID_PASSWORD_HASH -> HttpStatus.INTERNAL_SERVER_ERROR;
+            case USER_INVALID_PASSWORD_HASH, USER_MISSING_DEPENDENCIES -> HttpStatus.INTERNAL_SERVER_ERROR;
         };
 
         String error = exception.getType().toString().toLowerCase();
@@ -66,13 +70,31 @@ public class ExceptionController {
         return ResponseEntity.status(status).body(errorResponse);
     }
 
-    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponseBody> handleHttpMessageNotReadableException(HttpMessageNotReadableException exception) {
+        String error = "bad_request";
+        String message = exception.getMessage();
+        var errorResponse = new ErrorResponseBody(error, message);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+    @ExceptionHandler(MissingRequestHeaderException.class)
+    public ResponseEntity<ErrorResponseBody> handleHttpMessageNotReadableException(MissingRequestHeaderException exception) {
+        String error = "missing_request_header";
+        String message = exception.getMessage();
+        var errorResponse = new ErrorResponseBody(error, message);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
     @ExceptionHandler(Exception.class)
-    public ErrorResponseBody handleUnexpectedException(Exception exception) {
+    public ResponseEntity<ErrorResponseBody> handleUnexpectedException(Exception exception) {
         String error = "internal_server_error";
         String message = exception.getMessage();
+        var errorResponse = new ErrorResponseBody(error, message);
 
-        return new ErrorResponseBody(error, message);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
 
     public record ErrorResponseBody(

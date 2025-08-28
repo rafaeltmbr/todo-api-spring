@@ -4,10 +4,12 @@ import br.com.rafaeltmbr.todolist.user.core.entities.Email;
 import br.com.rafaeltmbr.todolist.user.core.entities.User;
 import br.com.rafaeltmbr.todolist.user.core.entities.UserName;
 import br.com.rafaeltmbr.todolist.user.core.entities.UserPassword;
+import br.com.rafaeltmbr.todolist.user.core.exceptions.UserException;
 import br.com.rafaeltmbr.todolist.user.core.use_cases.CreateUserAccountUseCase;
 import br.com.rafaeltmbr.todolist.user.core.use_cases.CreateUserSessionUseCase;
 import br.com.rafaeltmbr.todolist.user.infra.data.repositories.IUserRepositoryJpa;
 import br.com.rafaeltmbr.todolist.user.infra.di.UserContainer;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,18 +19,24 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/user")
 public class UserController {
+    private UserContainer userContainer;
+
     @Autowired
     private IUserRepositoryJpa userRepositoryJpaInterface;
 
+    @PostConstruct
+    public void init() throws UserException {
+        userContainer = UserContainer.getInstance(userRepositoryJpaInterface);
+    }
+
     @PostMapping("/session")
     public UserSessionResponse userSession(@RequestBody UserSessionRequestBody body) throws Exception {
-        var container = UserContainer.getInstance(userRepositoryJpaInterface);
         var params = new CreateUserSessionUseCase.Params(
                 new Email(body.email),
                 new UserPassword(body.password)
         );
 
-        CreateUserSessionUseCase.Response response = container.useCases.createUserSession().execute(params);
+        CreateUserSessionUseCase.Response response = userContainer.useCases.createUserSession().execute(params);
         User user = response.user();
 
         return new UserSessionResponse(
@@ -44,14 +52,13 @@ public class UserController {
 
     @PostMapping("/account")
     public UserResponseBody createUser(@RequestBody CreateUserRequestBody body) throws Exception {
-        var container = UserContainer.getInstance(userRepositoryJpaInterface);
         var params = new CreateUserAccountUseCase.Params(
                 new UserName(body.name),
                 new Email(body.email),
                 new UserPassword(body.password)
         );
 
-        var user = container.useCases.createUserAccount().execute(params);
+        var user = userContainer.useCases.createUserAccount().execute(params);
 
         return new UserResponseBody(
                 user.getId().getValue(),

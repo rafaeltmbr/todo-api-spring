@@ -8,12 +8,14 @@ public class Todo {
     private Id id;
     private TodoName name;
     private boolean done;
+    private Id userId;
     private CreatedAt createdAt;
 
-    public Todo(Id id, TodoName name, boolean done, CreatedAt createdAt) throws TodoException {
+    public Todo(Id id, TodoName name, boolean done, Id userId, CreatedAt createdAt) throws TodoException {
         setId(id);
         setName(name);
         setDone(done);
+        setUserId(userId);
         setCreatedAt(createdAt);
     }
 
@@ -45,6 +47,17 @@ public class Todo {
 
     public void setDone(boolean done) {
         this.done = done;
+    }
+
+    public Id getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Id userId) throws TodoException {
+        this.userId = userId;
+        if (this.userId == null) {
+            throw new TodoException(TodoException.Type.TODO_INVALID_STATE, "Todo userId must not be null.");
+        }
     }
 
     public CreatedAt getCreatedAt() {

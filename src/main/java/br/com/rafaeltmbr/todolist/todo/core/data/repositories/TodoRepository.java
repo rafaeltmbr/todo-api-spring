@@ -9,25 +9,52 @@ import java.util.Optional;
 
 
 public interface TodoRepository {
-    List<Todo> listAll() throws Exception;
+    List<Todo> listAll(ListAllParams params) throws Exception;
 
-    Optional<Todo> findById(Id id) throws Exception;
+    Optional<Todo> findById(FindByIdParams params) throws Exception;
 
-    Optional<Todo> findByName(TodoName name) throws Exception;
+    Optional<Todo> findByName(FindByNameParams params) throws Exception;
 
     Todo create(CreateParams params) throws Exception;
 
     Todo update(UpdateParams params) throws Exception;
 
-    void delete(Id id) throws Exception;
+    void delete(DeleteParams params) throws Exception;
 
-    record CreateParams(TodoName name) {
+    record CreateParams(
+            Id userId,
+            TodoName name
+    ) {
     }
 
     record UpdateParams(
-            Id id,
+            Id userId,
+            Id todoId,
             TodoName name,
             boolean done
+    ) {
+    }
+
+    record ListAllParams(
+            Id userId
+    ) {
+    }
+
+    record FindByIdParams(
+            Id userId,
+            Id todoId
+    ) {
+    }
+
+    record FindByNameParams(
+            Id userId,
+            TodoName name
+    ) {
+    }
+
+    record DeleteParams(
+            Id userId,
+            Id todoId
     ) {
     }
 }

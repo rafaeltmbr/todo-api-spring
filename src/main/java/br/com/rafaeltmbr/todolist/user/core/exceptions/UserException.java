@@ -13,6 +13,7 @@ public class UserException extends Exception {
     }
 
     public enum Type {
+        USER_MISSING_DEPENDENCIES,
         USER_INVALID_STATE,
         USER_INVALID_EMAIL,
         USER_INVALID_NAME,
@@ -21,6 +22,7 @@ public class UserException extends Exception {
         USER_NOT_FOUND,
         USER_EMAIL_ALREADY_USED,
         USER_INVALID_CREDENTIALS,
-        USER_INVALID_AUTHENTICATION_TOKEN
+        USER_INVALID_AUTHENTICATION_TOKEN,
+        USER_AUTHENTICATION_FAILED
     }
 }

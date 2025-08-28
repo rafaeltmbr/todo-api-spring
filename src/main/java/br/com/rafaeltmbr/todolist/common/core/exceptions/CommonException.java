@@ -1,10 +1,11 @@
 package br.com.rafaeltmbr.todolist.common.core.exceptions;
 
 public class CommonException extends Exception {
-    private Type type;
+    private final Type type;
 
     public CommonException(Type type, String message) {
         super(message);
+        this.type = type;
     }
 
     public Type getType() {
